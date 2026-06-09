@@ -3,11 +3,12 @@ import { Icons } from '../components/Icons.jsx';
 import { PHOTO_GALLERY } from '../data/constants.js';
 
 const PHOTO_CATEGORIES = [
-  { id: 'all',   label: 'Tất cả' },
-  { id: 'rules', label: 'Nội quy & Sơ đồ' },
-  { id: 'setup', label: 'Setup bàn' },
-  { id: 'steak', label: 'Kiến thức Steak' },
-  { id: 'menu',  label: 'Nghiệp vụ Order' },
+  { id: 'all',     label: 'Tất cả' },
+  { id: 'rules',   label: 'Sơ đồ Sảnh' },
+  { id: 'setup',   label: 'Setup bàn' },
+  { id: 'steak',   label: 'Steak & Sườn BBQ' },
+  { id: 'menu',    label: 'Order & Món ăn' },
+  { id: 'service', label: 'Tác phong phục vụ' },
 ];
 
 export default function TabPhotos() {
