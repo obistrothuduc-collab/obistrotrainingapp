@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { SERVICE_ACADEMY, SERVICE_ACADEMY_LEVELS } from '../data/serviceAcademy.js';
 
 const PASS_KEY   = 'obistro_lcb_unlocked';
 const CORRECT_PW = 'lecordonbleu2026';
@@ -68,6 +69,153 @@ const SAUCES = [
   { mother: 'Hollandaise (Xốt bơ trứng)', application: 'Salad cao cấp · Món Brunch đặc biệt', note: 'Emulsification tay — giữ nhiệt 60–65°C tránh tách lớp' },
   { mother: 'Tomat (Xốt cà chua Pháp)', application: 'Nền xốt bò bằm · Biến thể Arrabiata Pasta', note: 'Khác hoàn toàn xốt cà chua thông thường — cần fond bò' },
 ];
+
+function ServiceAcademyContent() {
+  const [activeLevel, setActiveLevel] = useState('coban');
+  const [activeLesson, setActiveLesson] = useState(0);
+  const [mobileView, setMobileView] = useState('list');
+
+  const level = SERVICE_ACADEMY_LEVELS.find(item => item.id === activeLevel) || SERVICE_ACADEMY_LEVELS[0];
+  const curriculum = SERVICE_ACADEMY[activeLevel] || SERVICE_ACADEMY.coban;
+  const lesson = curriculum.modules[activeLesson] || curriculum.modules[0];
+
+  const changeLevel = (levelId) => {
+    setActiveLevel(levelId);
+    setActiveLesson(0);
+    setMobileView('list');
+  };
+
+  return (
+    <div className="bg-slate-50 border border-slate-700/60 rounded-2xl overflow-hidden text-slate-800">
+      <div className="grid grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)] min-h-[680px]">
+        <aside className={`bg-white border-r border-slate-200 p-4 lg:max-h-[78vh] lg:overflow-y-auto ${mobileView === 'content' ? 'hidden lg:block' : 'block'}`}>
+          <div className="space-y-3">
+            <div>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Chọn cấp độ đào tạo</p>
+              <p className="text-xs text-slate-500 mt-1">Lộ trình riêng cho đội ngũ sảnh Ơ Bistro</p>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2">
+              {SERVICE_ACADEMY_LEVELS.map(item => {
+                const active = item.id === activeLevel;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => changeLevel(item.id)}
+                    className={`rounded-xl border p-3 text-center transition-all ${active ? item.active : 'bg-slate-50 hover:bg-white border-slate-200 text-slate-600'}`}
+                  >
+                    <span className="block text-base mb-1">{item.medal}</span>
+                    <span className="text-[11px] font-bold">{item.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="pt-2 border-t border-slate-100 space-y-1.5">
+              {curriculum.modules.map((module, index) => {
+                const active = index === activeLesson;
+                return (
+                  <button
+                    key={`${activeLevel}-${module.stt}`}
+                    onClick={() => { setActiveLesson(index); setMobileView('content'); }}
+                    className={`w-full flex items-center gap-3 rounded-xl p-3 text-left transition-all ${active ? 'bg-slate-100 border-l-4 border-slate-900' : 'hover:bg-slate-50 border-l-4 border-transparent'}`}
+                  >
+                    <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-[11px] font-mono font-bold shrink-0 ${active ? 'bg-slate-200 text-slate-700' : 'bg-slate-100 text-slate-400'}`}>
+                      {String(module.stt).padStart(2, '0')}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-sm font-bold text-slate-800 line-clamp-2">{module.title}</span>
+                      <span className="block text-[10px] text-slate-400 mt-0.5">{module.type}</span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </aside>
+
+        <article className={`bg-white lg:max-h-[78vh] lg:overflow-y-auto ${mobileView === 'list' ? 'hidden lg:block' : 'block'}`}>
+          <div className="lg:hidden flex items-center bg-slate-100 border-b border-slate-200 px-4 py-3">
+            <button
+              onClick={() => setMobileView('list')}
+              className="flex items-center gap-2 text-sm font-semibold text-slate-600 active:text-slate-900"
+            >
+              <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+              Danh sách bài
+            </button>
+          </div>
+          <div className={`bg-slate-950 border-t-4 ${level.border} p-6 md:p-8 text-white`}>
+            <div className="flex flex-wrap items-center gap-3 mb-4">
+              <span className="text-xs font-mono text-slate-300 bg-slate-800 border border-slate-700 rounded-md px-3 py-1">
+                STT {String(lesson.stt).padStart(2, '0')}
+              </span>
+              <span className={`text-[11px] font-black uppercase tracking-widest ${level.accent}`}>
+                {curriculum.name}
+              </span>
+            </div>
+            <h2 className="text-2xl md:text-3xl font-black leading-tight">{lesson.title}</h2>
+            <div className="inline-flex items-center gap-2 mt-5 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-xs text-slate-200">
+              <span>📝</span>
+              <span>Loại hình: {lesson.type}</span>
+            </div>
+          </div>
+
+          <div className="p-6 md:p-8 space-y-7">
+            <section className="space-y-3">
+              <h3 className="text-sm font-black uppercase tracking-widest text-slate-800 flex items-center gap-2">
+                <span>🎯</span> Mục tiêu bài học
+              </h3>
+              <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm text-emerald-900 leading-relaxed">
+                {lesson.objective}
+              </div>
+            </section>
+
+            <section className="space-y-4">
+              <h3 className="text-sm font-black uppercase tracking-widest text-slate-800 flex items-center gap-2 border-b border-slate-200 pb-3">
+                <span>📚</span> Nội dung SOP chi tiết
+              </h3>
+              <div className="space-y-5">
+                {lesson.sections.map(section => (
+                  <div key={section.heading} className="space-y-2">
+                    <h4 className="text-sm font-black uppercase tracking-wider text-slate-800 border-b border-slate-200 pb-2">
+                      {section.heading}
+                    </h4>
+                    <p className="text-sm text-slate-600 leading-relaxed">{section.body}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className="space-y-4">
+              <h3 className="text-sm font-black uppercase tracking-widest text-slate-800 border-b border-slate-200 pb-3">
+                III. {lesson.cardsTitle}
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {lesson.cards.map(card => (
+                  <div key={card.title} className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
+                    <h4 className={`text-sm font-black ${level.accent} border-b border-slate-100 pb-2 mb-3`}>
+                      {card.title}
+                    </h4>
+                    <p className="text-sm text-slate-600 leading-relaxed">{card.body}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className="rounded-xl border border-amber-200 bg-amber-50 p-4 space-y-2">
+              <h3 className="text-sm font-black text-amber-800 flex items-center gap-2">
+                <span>🧪</span> Bài thực hành tại ca
+              </h3>
+              <p className="text-sm text-amber-900 leading-relaxed">{lesson.practice}</p>
+            </section>
+          </div>
+        </article>
+      </div>
+    </div>
+  );
+}
 
 // ── Lock screen ───────────────────────────────────────────────────────────────
 function LockScreen({ onUnlock }) {
@@ -152,6 +300,8 @@ function LockScreen({ onUnlock }) {
 
 // ── Unlocked content ──────────────────────────────────────────────────────────
 function AcademyContent({ onLock }) {
+  const [academyMode, setAcademyMode] = useState('kitchen');
+
   return (
     <div className="bg-slate-900 rounded-2xl -m-6 md:-m-8 p-5 md:p-7 min-h-full space-y-6 animate-fadeIn">
 
@@ -160,7 +310,7 @@ function AcademyContent({ onLock }) {
         <div>
           <p className="text-[9px] font-bold text-amber-400 tracking-[0.15em] uppercase mb-1">Le Cordon Bleu — Nội bộ</p>
           <h2 className="text-white font-bold text-lg">HỌC VIỆN ẨM THỰC CAO CẤP</h2>
-          <p className="text-slate-400 text-xs mt-0.5">Tài liệu kỹ thuật bếp chuẩn 5 sao dành cho Ơ Bistro Thủ Đức</p>
+          <p className="text-slate-400 text-xs mt-0.5">Tài liệu kỹ thuật bếp & phục vụ chuẩn 5 sao dành cho Ơ Bistro Thủ Đức</p>
         </div>
         <button onClick={onLock}
           className="shrink-0 flex items-center gap-1.5 text-[10px] font-semibold text-slate-500 hover:text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1.5 rounded-lg transition-colors mt-0.5">
@@ -170,6 +320,32 @@ function AcademyContent({ onLock }) {
           Khóa lại
         </button>
       </div>
+
+      <div className="grid grid-cols-2 gap-2 rounded-2xl bg-slate-950/70 border border-slate-800 p-1.5">
+        <button
+          onClick={() => setAcademyMode('kitchen')}
+          className={`rounded-xl px-3 py-3 text-xs font-bold transition-all ${academyMode === 'kitchen'
+            ? 'bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/20'
+            : 'text-slate-400 hover:text-white hover:bg-slate-800'
+          }`}
+        >
+          🍳 Bếp Âu
+        </button>
+        <button
+          onClick={() => setAcademyMode('service')}
+          className={`rounded-xl px-3 py-3 text-xs font-bold transition-all ${academyMode === 'service'
+            ? 'bg-[#00a2d5] text-white shadow-lg shadow-cyan-500/20'
+            : 'text-slate-400 hover:text-white hover:bg-slate-800'
+          }`}
+        >
+          🤵 Phục Vụ 5★
+        </button>
+      </div>
+
+      {academyMode === 'service' ? (
+        <ServiceAcademyContent />
+      ) : (
+        <>
 
       {/* ── Section 1: Brigade System ── */}
       <section className="space-y-3">
@@ -296,6 +472,8 @@ function AcademyContent({ onLock }) {
         <p className="text-[10px] text-slate-600 text-center">Mở trong cửa sổ mới · Yêu cầu kết nối internet</p>
       </section>
 
+        </>
+      )}
     </div>
   );
 }
