@@ -57,12 +57,24 @@ export default function TabQuiz() {
 
     setSubmitting(true);
     setPhase('result');
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
     try {
       const params = new URLSearchParams({ name: staffName.trim(), score: finalScore, date: dateStr, passed: String(finalScore >= PASS_SCORE) });
-      await fetch(`${CONFIG.GOOGLE_SHEET_API_URL}?${params}`, { method: 'GET', mode: 'no-cors' });
-      setSubmitMsg('✅ Đã ghi điểm lên bảng quản lý thành công!');
-    } catch {
-      setSubmitMsg('⚠️ Ghi điểm online thất bại — báo quản lý ghi tay.');
+      const res = await fetch(`${CONFIG.GOOGLE_SHEET_API_URL}?${params}`, { signal: controller.signal });
+      clearTimeout(timeout);
+      if (res.ok) {
+        setSubmitMsg('✅ Đã ghi điểm lên bảng quản lý thành công!');
+      } else {
+        setSubmitMsg(`⚠️ Server trả lỗi ${res.status} — báo quản lý ghi tay.`);
+      }
+    } catch (err) {
+      clearTimeout(timeout);
+      if (err.name === 'AbortError') {
+        setSubmitMsg('⚠️ Hết thời gian kết nối (8s) — kết quả đã lưu trên máy này.');
+      } else {
+        setSubmitMsg('⚠️ Ghi điểm online thất bại — kết quả đã lưu trên máy này.');
+      }
     } finally {
       setSubmitting(false);
     }

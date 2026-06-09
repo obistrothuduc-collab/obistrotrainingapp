@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Icons, BrandLogo } from './components/Icons.jsx';
 import { removeAccents } from './data/config.js';
+import { SEARCH_INDEX } from './data/search.js';
 
 import TabHome    from './tabs/TabHome.jsx';
 import TabShifts  from './tabs/TabShifts.jsx';
@@ -38,12 +39,10 @@ const NAV_ITEMS = [
   ]},
   { group: 'KHẢO SÁT & ĐÁNH GIÁ', items: [
     { id: 'quiz',    icon: Icons.Award,    label: 'Thi Trắc Nghiệm' },
-    { id: 'history', icon: Icons.Database, label: 'Bảng Điểm Quản Lý' },
+    { id: 'history', icon: Icons.Database, label: 'Lịch Sử Trên Máy Này' },
   ]},
 ];
 
-// Search index sẽ được import từ data/search.js sau — tạm để rỗng
-const SEARCH_INDEX = [];
 
 export default function App() {
   const [activeTab, setActiveTab]         = useState('home');
@@ -52,11 +51,13 @@ export default function App() {
   const [searchQuery, setSearchQuery]     = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isSearchOpen, setIsSearchOpen]   = useState(false);
+  const [navOpen, setNavOpen]             = useState(false);
 
   const goTo = (id, option) => {
     setActiveTab(id);
     if (option && id === 'menu') setActiveMenuCategory(option);
     if (option && id === 'steak_sauces') setActiveSauceCategory(option);
+    setNavOpen(false);
     window.scrollTo(0, 0);
   };
 
@@ -173,11 +174,11 @@ export default function App() {
       {/* ── BODY ───────────────────────────────────────────────────────────── */}
       <div className="max-w-[1400px] mx-auto px-4 py-6 flex flex-col md:flex-row gap-6 w-full flex-1">
 
-        {/* Sidebar nav */}
-        <nav className="w-full md:w-64 shrink-0 overflow-x-auto md:overflow-x-visible pb-3 md:pb-0 scrollbar-none flex flex-row md:flex-col gap-1 md:gap-0.5">
+        {/* Sidebar nav — desktop only */}
+        <nav className="hidden md:flex md:flex-col w-64 shrink-0 gap-0.5">
           {NAV_ITEMS.map(({ group, items }) => (
-            <div key={group} className="contents md:block">
-              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-3 mt-4 mb-2 hidden md:block first:mt-0">
+            <div key={group}>
+              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-3 mt-4 mb-2 first:mt-0">
                 {group}
               </div>
               {items.map(({ id, icon: Icon, label }) => {
@@ -186,7 +187,7 @@ export default function App() {
                   <button
                     key={id}
                     onClick={() => goTo(id)}
-                    className={`flex items-center gap-3 px-4 py-2.5 text-[13px] font-medium rounded-lg whitespace-nowrap transition-all duration-200 w-full text-left ${
+                    className={`flex items-center gap-3 px-4 py-2.5 text-[13px] font-medium rounded-lg transition-all duration-200 w-full text-left ${
                       isActive
                         ? 'bg-[#00a2d5] text-white shadow-sm font-semibold'
                         : 'text-slate-600 hover:bg-slate-200/60 hover:text-slate-900'
@@ -202,6 +203,54 @@ export default function App() {
             </div>
           ))}
         </nav>
+
+        {/* Mobile: nút Danh mục cố định ở góc dưới */}
+        <button
+          onClick={() => setNavOpen(true)}
+          className="md:hidden fixed bottom-5 right-5 z-40 flex items-center gap-2 bg-[#00a2d5] text-white font-bold text-sm px-4 py-3 rounded-full shadow-lg active:scale-95 transition-transform"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+          Danh mục
+        </button>
+
+        {/* Mobile bottom sheet */}
+        {navOpen && (
+          <div className="md:hidden fixed inset-0 z-50 flex flex-col justify-end">
+            {/* Backdrop */}
+            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setNavOpen(false)} />
+            {/* Sheet */}
+            <div className="relative bg-white rounded-t-2xl max-h-[80vh] overflow-y-auto pb-8 pt-4 shadow-2xl animate-slideUp">
+              <div className="flex items-center justify-between px-5 pb-3 border-b border-slate-100">
+                <span className="font-bold text-slate-800 text-sm">Danh mục</span>
+                <button onClick={() => setNavOpen(false)} className="text-slate-400 hover:text-slate-700 text-lg font-bold">✕</button>
+              </div>
+              {NAV_ITEMS.map(({ group, items }) => (
+                <div key={group} className="px-4 pt-3">
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-2 mb-1">{group}</div>
+                  {items.map(({ id, icon: Icon, label }) => {
+                    const isActive = activeTab === id;
+                    return (
+                      <button
+                        key={id}
+                        onClick={() => goTo(id)}
+                        className={`flex items-center gap-3 px-3 py-3 text-sm font-medium rounded-xl w-full text-left mb-0.5 transition-colors ${
+                          isActive
+                            ? 'bg-[#00a2d5] text-white font-semibold'
+                            : 'text-slate-700 hover:bg-slate-100'
+                        }`}
+                      >
+                        <span className={isActive ? 'text-white' : 'text-slate-500'}><Icon /></span>
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Main content */}
         <main className="flex-1 bg-white rounded-2xl border border-slate-200/50 shadow-sm p-6 md:p-8 overflow-hidden">

@@ -139,7 +139,10 @@ function LockScreen({ onUnlock }) {
           </button>
 
           <p className="text-[10px] text-slate-600 text-center leading-relaxed">
-            Tài liệu kỹ thuật độc quyền.<br/>Không phổ biến ra ngoài.
+            Tài liệu kỹ thuật độc quyền. Không phổ biến ra ngoài.
+          </p>
+          <p className="text-[9px] text-slate-700 text-center">
+            🔒 Khóa demo nội bộ — liên hệ quản lý để lấy mật khẩu.
           </p>
         </div>
       </div>

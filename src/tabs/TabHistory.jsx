@@ -43,7 +43,7 @@ export default function TabHistory() {
   return (
     <div className="space-y-5 animate-fadeIn">
       <h2 className="text-xl font-bold border-b border-slate-100 pb-3 flex items-center gap-2">
-        <Icons.Database /> BẢNG ĐIỂM QUẢN LÝ — Lịch sử thi trắc nghiệm
+        <Icons.Database /> LỊCH SỬ TRÊN MÁY NÀY — Kết quả thi trắc nghiệm
       </h2>
 
       {/* Stats */}
@@ -149,7 +149,7 @@ export default function TabHistory() {
       </div>
 
       <p className="text-[10px] text-slate-400 leading-relaxed">
-        * Lịch sử được lưu trên trình duyệt (localStorage). Kết quả chính thức được ghi tự động lên Google Sheets khi nhân viên nộp bài.
+        * Lịch sử được lưu trên trình duyệt của máy này (localStorage) — không chia sẻ giữa các thiết bị. Kết quả chính thức được ghi tự động lên Google Sheets khi nhân viên nộp bài.
         Quản lý vào bảng Google Sheets để xuất báo cáo chính thức.
       </p>
     </div>

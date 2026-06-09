@@ -1,0 +1,110 @@
+// Search index — mỗi entry ánh xạ từ khóa → tab (+ option sub-tab nếu có)
+export const SEARCH_INDEX = [
+  // ── NỘI QUY CƠ BẢN ──────────────────────────────────────────────────────
+  { id: 'home',    title: 'Trang chủ — Tổng quan đào tạo',
+    keywords: 'trang chu tong quan gioi thieu welcome' },
+
+  { id: 'shifts',  title: 'Giờ làm việc & Ca làm',
+    keywords: 'gio lam ca lam thoi gian thu tu thu sau sang chieu toi gio vao gio ra' },
+  { id: 'shifts',  title: 'Chính sách nghỉ phép — phép năm',
+    keywords: 'nghi phep phep nam phep thuong nien xin nghi dang ky nghi phep thuong nien' },
+  { id: 'shifts',  title: 'Bữa ăn nhân viên — tiền ăn',
+    keywords: 'bua an tien an phu cap an 200000 500000 part time full time com' },
+  { id: 'shifts',  title: 'Nghỉ không lương — nghỉ ốm',
+    keywords: 'nghi om nghi benh nghi khong luong phep khong luong bao cao' },
+
+  { id: 'rules',   title: 'Quy định đi trễ — phạt trễ giờ',
+    keywords: 'di tre phat tre gio tru luong ky luat canh cao ban hanh chinh' },
+  { id: 'rules',   title: 'Phúc lợi nhân viên — lương thưởng',
+    keywords: 'luong thuong phuc loi chinh sach nhan vien service charge tip tang luong' },
+  { id: 'rules',   title: 'Kỷ luật — sa thải — cảnh cáo',
+    keywords: 'ky luat sa thai canh cao vi pham xu ly tuom chom trom cap' },
+
+  { id: 'conduct', title: 'Đồng phục & tác phong nhân viên',
+    keywords: 'dong phuc tac phong quan ao giay dep trang phuc ve sinh ca nhan dau toc rang mieng' },
+  { id: 'conduct', title: 'Giao tiếp với khách — thái độ phục vụ',
+    keywords: 'giao tiep khach hang thai do lich su ton trong cam on xin loi phan nan khieu nai' },
+  { id: 'conduct', title: 'Quy tắc sử dụng điện thoại — mạng xã hội',
+    keywords: 'dien thoai mang xa hoi facebook zalo dang anh cam dung dien thoai ca lam' },
+
+  { id: 'safety',  title: 'Sơ đồ sảnh — bố trí bàn ghế',
+    keywords: 'so do sanh ban ghe ban so ban vi tri loi di san xuat an toan phong chay' },
+  { id: 'safety',  title: 'An toàn thực phẩm — vệ sinh',
+    keywords: 'an toan thuc pham ve sinh rua tay khu trung luu tru thuc pham hasd' },
+
+  // ── THỰC ĐƠN ────────────────────────────────────────────────────────────
+  { id: 'menu',    title: 'Khuyến mãi & Set menu đặc biệt', option: 'promotions',
+    keywords: 'khuyen mai uu dai sale giam gia set menu promotion summer beat june' },
+  { id: 'menu',    title: 'Steak — bò wagyu striploin ribeye topblade',
+    option: 'steak',
+    keywords: 'steak bo wagyu striploin ribeye topblade thit bo nuong 150g 200g gia tien' },
+  { id: 'menu',    title: 'Pasta — mì ý carbonara arrabiata',
+    option: 'pasta',
+    keywords: 'pasta mi y carbonara arrabiata aglio bolognese pho mi y italian' },
+  { id: 'menu',    title: 'Salad — khai vị — súp',
+    option: 'salad',
+    keywords: 'salad khai vi sup caesar caesar salad rau cu salad garden' },
+  { id: 'menu',    title: 'Đồ uống — cocktail — mocktail',
+    option: 'drinks',
+    keywords: 'do uong cocktail mocktail nuoc ep sinh to cafe ca phe tra' },
+  { id: 'menu',    title: 'Tráng miệng — dessert',
+    option: 'dessert',
+    keywords: 'trang mieng dessert banh ngot kem tieu chuan phu vu' },
+
+  // ── NGHIỆP VỤ F&B ───────────────────────────────────────────────────────
+  { id: 'theory_fb', title: 'Omotenashi — tiêu chuẩn phục vụ 5 sao',
+    keywords: 'omotenashi 5 sao phuc vu tieu chuan sequence of service chao hoi don khach' },
+  { id: 'theory_fb', title: 'Sequence of Service — quy trình phục vụ',
+    keywords: 'sequence service quy trinh phuc vu buoc don khach goi mon tinh tien' },
+  { id: 'theory_fb', title: 'Kỹ năng bán hàng — upsell recommend',
+    keywords: 'upsell ban hang tu van mon goi y khach recommend de xuat tuyen dung tich diem' },
+
+  { id: 'steak_sauces', title: 'Độ chín steak — rare medium well done',
+    option: 'steak',
+    keywords: 'do chin steak rare medium well done medium rare trung binh chin tai nhiet do nhiet ke' },
+  { id: 'steak_sauces', title: 'Xốt steak — pepper mushroom truffle',
+    option: 'sauces',
+    keywords: 'xot sot sauce pepper mushroom truffle béarnaise chimichurri xot tieu xot nam' },
+  { id: 'steak_sauces', title: 'Xốt pasta — kem cà chua arrabiata',
+    option: 'pasta',
+    keywords: 'xot pasta arrabiata kem ca chua tomato cream sauce aglio olio' },
+  { id: 'steak_sauces', title: 'Cocktail & mocktail pha chế',
+    option: 'cocktail',
+    keywords: 'cocktail mocktail pha che bartender mojito sangria virgin' },
+
+  { id: 'kitchen', title: 'Tiêu chuẩn plating — trình bày đĩa',
+    keywords: 'plating trinh bay dia beef wagyu striploin topblade ribeye luong dinh luong grillmark' },
+  { id: 'kitchen', title: 'Nhiệt độ steak — nhiệt kế bắt buộc',
+    keywords: 'nhiet do steak nhiet ke bat buoc MR M MW 54 57 60 63 65 68 celsius' },
+  { id: 'kitchen', title: 'Vệ sinh 5S bếp — FIFO thực phẩm',
+    keywords: 've sinh 5S bep fifo first in first out kiem tra nha bep nhiet do tu lanh' },
+  { id: 'kitchen', title: 'Thời gian ra món — timing KPI',
+    keywords: 'thoi gian ra mon timing kpi salad 5 phut pasta 10 12 phut steak 15 18 phut' },
+  { id: 'kitchen', title: 'Khuyến mãi June Summer Beat',
+    keywords: 'june summer beat khuyen mai 300k salad 500k nuoc 600k bbq ribs suon' },
+
+  // ── VIDEO & HÌNH ẢNH ─────────────────────────────────────────────────────
+  { id: 'videos',  title: 'Video đào tạo — quản trị nhà hàng',
+    keywords: 'video dao tao quan tri nha hang khach san huong nghiep a au playlist youtube' },
+  { id: 'videos',  title: 'Video đầu bếp — kỹ thuật nấu ăn',
+    keywords: 'video dau bep ky thuat nau an che bien mon steak pasta sauce playlist' },
+  { id: 'videos',  title: 'Video pha chế — bartender',
+    keywords: 'video pha che bartender cocktail mocktail bar playlist youtube' },
+
+  { id: 'photos',  title: 'Hình ảnh setup bàn — dao nĩa ly',
+    keywords: 'hinh anh setup ban dao nia ly khan an fine dining table setting' },
+  { id: 'photos',  title: 'Hình ảnh steak — trình bày đĩa',
+    keywords: 'hinh anh steak trinh bay dia bbq ribs suon medium rare' },
+  { id: 'photos',  title: 'Hình ảnh tác phong phục vụ',
+    keywords: 'hinh anh tac phong phuc vu dong phuc nhan vien waiter service' },
+
+  // ── HỌC VIỆN & KHẢO SÁT ─────────────────────────────────────────────────
+  { id: 'cordon_bleu', title: 'Le Cordon Bleu — học viện cao cấp',
+    keywords: 'le cordon bleu hoc vien cao cap brigade system mother sauce sauce me' },
+
+  { id: 'quiz',    title: 'Thi trắc nghiệm — kiểm tra kiến thức',
+    keywords: 'thi trac nghiem kiem tra kien thuc bai thi quiz on tap diem so pass 90' },
+
+  { id: 'history', title: 'Lịch sử điểm thi — bảng điểm trên máy',
+    keywords: 'lich su diem thi bang diem xem lai ket qua thi trac nghiem' },
+];
