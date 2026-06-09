@@ -30,7 +30,7 @@ export default function TabVideos() {
           <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
             <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${active.iconBg}`}>{active.category}</span>
             <h3 className="font-bold text-slate-900 text-sm mt-2 mb-1">{active.title}</h3>
-            <p className="text-[11px] text-slate-500">Thời lượng: {active.duration}</p>
+            <p className="text-[11px] text-slate-500">Kênh: {active.duration}</p>
           </div>
         </div>
 

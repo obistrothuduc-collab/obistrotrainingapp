@@ -10,9 +10,9 @@ export const STEAK_DONENESS_LEVELS = [
 ];
 
 export const VIDEO_PLAYLIST = [
-  { id: 'pl1', category: 'Danh sách 1', title: 'Playlist 1 — Đào tạo nghiệp vụ nhà hàng', duration: 'Nhiều tập', link: CONFIG.VIDEO_LINKS.pl1, iconBg: 'bg-[#00a2d5]/10 text-[#00a2d5]' },
-  { id: 'pl2', category: 'Danh sách 2', title: 'Playlist 2 — Kỹ năng phục vụ & chăm sóc khách', duration: 'Nhiều tập', link: CONFIG.VIDEO_LINKS.pl2, iconBg: 'bg-emerald-50 text-emerald-600' },
-  { id: 'pl3', category: 'Danh sách 3', title: 'Playlist 3 — Kiến thức chuyên sâu F&B', duration: 'Nhiều tập', link: CONFIG.VIDEO_LINKS.pl3, iconBg: 'bg-orange-50 text-orange-600' },
+  { id: 'pl1', category: '40 video', title: 'Học viện Quản trị Nhà hàng - Khách sạn', duration: 'Hướng Nghiệp Á Âu', link: CONFIG.VIDEO_LINKS.pl1, iconBg: 'bg-[#00a2d5]/10 text-[#00a2d5]' },
+  { id: 'pl2', category: '149 video', title: 'Học viện Đầu Bếp — Học nấu ăn ngành F&B', duration: 'Hướng Nghiệp Á Âu', link: CONFIG.VIDEO_LINKS.pl2, iconBg: 'bg-emerald-50 text-emerald-600' },
+  { id: 'pl3', category: 'Nhiều tập', title: 'Học viện Pha Chế', duration: 'Hướng Nghiệp Á Âu', link: CONFIG.VIDEO_LINKS.pl3, iconBg: 'bg-orange-50 text-orange-600' },
 ];
 
 export const PHOTO_GALLERY = [
