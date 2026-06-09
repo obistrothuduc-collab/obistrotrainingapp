@@ -12,9 +12,10 @@ import TabVideos      from './tabs/TabVideos.jsx';
 import TabPhotos      from './tabs/TabPhotos.jsx';
 import TabTheoryFB    from './tabs/TabTheoryFB.jsx';
 import TabSteakSauces from './tabs/TabSteakSauces.jsx';
-import TabKitchen     from './tabs/TabKitchen.jsx';
-import TabQuiz        from './tabs/TabQuiz.jsx';
-import TabHistory     from './tabs/TabHistory.jsx';
+import TabKitchen      from './tabs/TabKitchen.jsx';
+import TabCordonBleu   from './tabs/TabCordonBleu.jsx';
+import TabQuiz         from './tabs/TabQuiz.jsx';
+import TabHistory      from './tabs/TabHistory.jsx';
 
 const NAV_ITEMS = [
   { group: 'NỘI QUY CƠ BẢN', items: [
@@ -31,6 +32,9 @@ const NAV_ITEMS = [
     { id: 'kitchen',     icon: Icons.ChefHat,   label: 'Nghiệp Vụ Bếp' },
     { id: 'videos',      icon: Icons.PlayCircle, label: 'Video Đào Tạo' },
     { id: 'photos',      icon: Icons.Photo,      label: 'Hình Ảnh Đào Tạo' },
+  ]},
+  { group: 'HỌC VIỆN CAO CẤP', items: [
+    { id: 'cordon_bleu', icon: Icons.GraduationCap, label: 'Le Cordon Bleu 🔒' },
   ]},
   { group: 'KHẢO SÁT & ĐÁNH GIÁ', items: [
     { id: 'quiz',    icon: Icons.Award,    label: 'Thi Trắc Nghiệm' },
@@ -93,6 +97,7 @@ export default function App() {
       case 'theory_fb':    return <TabTheoryFB />;
       case 'steak_sauces': return <TabSteakSauces />;
       case 'kitchen':      return <TabKitchen />;
+      case 'cordon_bleu':  return <TabCordonBleu />;
       case 'videos':       return <TabVideos />;
       case 'photos':       return <TabPhotos />;
       case 'quiz':         return <TabQuiz />;
