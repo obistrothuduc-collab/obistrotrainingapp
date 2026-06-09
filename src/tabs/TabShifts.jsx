@@ -59,7 +59,7 @@ export default function TabShifts() {
             <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-xl shrink-0">📅</div>
             <div>
               <p className="text-[10px] font-bold text-slate-400 uppercase">Full-time</p>
-              <p className="text-sm font-bold text-slate-800">Đủ 26 ngày công / tháng</p>
+              <p className="text-sm font-bold text-slate-800">Đủ 200 giờ công / tháng</p>
               <p className="text-xs text-emerald-600 font-bold">Nhận 500.000 VNĐ tiền ăn</p>
             </div>
           </div>

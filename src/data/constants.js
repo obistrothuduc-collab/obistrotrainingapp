@@ -27,35 +27,35 @@ export const PHOTO_GALLERY = [
   // Setup bàn
   { id: 'p3', category: 'setup', title: 'Quy chuẩn Setup: Đĩa — Dao — Nĩa đúng vị trí',
     desc: 'Dao đặt bên PHẢI, lưỡi quay vào trong. Nĩa đặt bên TRÁI. Khoảng cách từ mép bàn: 2cm. Đĩa share đặt chính giữa.',
-    url: 'https://images.unsplash.com/photo-yLfsEMVbOWA?auto=format&fit=crop&w=1200&q=80' },
+    url: 'https://images.pexels.com/photos/17057034/pexels-photo-17057034.jpeg?auto=compress&cs=tinysrgb&w=1200' },
   { id: 'p4', category: 'setup', title: 'Setup ly rượu & bộ dao nĩa Fine Dining hoàn chỉnh',
     desc: 'Ly rượu đặt trên và bên phải đĩa. Khăn ăn gấp chuẩn đặt trên đĩa hoặc bên trái. Không để dấu tay trên ly, dao, nĩa khi setup.',
-    url: 'https://images.unsplash.com/photo-W9hk6ZQJQxQ?auto=format&fit=crop&w=1200&q=80' },
+    url: 'https://images.pexels.com/photos/4791745/pexels-photo-4791745.jpeg?auto=compress&cs=tinysrgb&w=1200' },
 
   // Kiến thức Steak
   { id: 'p5', category: 'steak', title: 'Mặt cắt lõi Steak — Nhận biết độ chín bằng màu sắc',
     desc: 'Medium Rare: lõi hồng đậm chiếm 60% mặt cắt. Medium: hồng nhạt đều. Medium Well: chỉ còn vệt hồng ở tâm. Dùng nhiệt kế để chắc chắn.',
-    url: 'https://images.unsplash.com/photo-FtS1PZ-cppw?auto=format&fit=crop&w=1200&q=80' },
+    url: 'https://images.pexels.com/photos/14447503/pexels-photo-14447503.jpeg?auto=compress&cs=tinysrgb&w=1200' },
   { id: 'p6', category: 'steak', title: 'Kỹ thuật cắt & trình bày Steak lên đĩa',
     desc: 'Sau khi Resting 3-5 phút, cắt theo thớ thịt để giữ nước ngọt. Đặt mặt cắt hướng lên trên để khách thấy độ chín. Grill marks phải rõ nét.',
-    url: 'https://images.unsplash.com/photo-Vr6Su7dd2qs?auto=format&fit=crop&w=1200&q=80' },
+    url: 'https://images.pexels.com/photos/7807407/pexels-photo-7807407.jpeg?auto=compress&cs=tinysrgb&w=1200' },
   { id: 'p7', category: 'steak', title: 'Sườn heo Texas BBQ — Tiêu chuẩn xốt & màu sắc hoàn thiện',
     desc: 'Bề mặt sườn phải óng ả màu nâu caramel, xốt BBQ phủ đều không cháy. Ăn kèm khoai tây và salad được trình bày gọn một phía đĩa.',
-    url: 'https://images.unsplash.com/photo-UeYkqQh4PoI?auto=format&fit=crop&w=1200&q=80' },
+    url: 'https://images.pexels.com/photos/28308007/pexels-photo-28308007.jpeg?auto=compress&cs=tinysrgb&w=1200' },
 
   // Nghiệp vụ Order
   { id: 'p8', category: 'menu', title: 'Cách ghi phiếu Order chuẩn — Số bàn, Pax, Độ chín, Xốt',
     desc: 'Ghi rõ: số bàn / số khách (pax) / độ chín viết tắt (MR, M, MW) / loại xốt. Đọc lại order trước khi chuyển bếp. Viết rõ ràng, không tẩy xóa.',
-    url: 'https://images.unsplash.com/photo-WXOkRjuVDIc?auto=format&fit=crop&w=1200&q=80' },
+    url: 'https://images.pexels.com/photos/3769740/pexels-photo-3769740.jpeg?auto=compress&cs=tinysrgb&w=1200' },
   { id: 'p9', category: 'menu', title: 'Trình bày Pasta — Chuẩn cuộn tròn tâm đĩa',
     desc: 'Cuộn mì thành khối tròn cao ở chính giữa đĩa đen. Xốt chan vừa phải, không để xốt loang ra viền đĩa. Trang trí lá húng tây hoặc phô mai bào.',
-    url: 'https://images.unsplash.com/photo--sbE6MDlEuM?auto=format&fit=crop&w=1200&q=80' },
+    url: 'https://images.pexels.com/photos/6213740/pexels-photo-6213740.jpeg?auto=compress&cs=tinysrgb&w=1200' },
 
   // Tác phong phục vụ
   { id: 'p10', category: 'service', title: 'Tác phong Nhân viên Phục vụ — Đồng phục & Thái độ',
     desc: 'Đồng phục thẳng nếp, tạp dề sạch, tóc gọn, nụ cười tự nhiên. Tư thế đứng thẳng — không khoanh tay, không bỏ tay vào túi khi phục vụ.',
-    url: 'https://images.unsplash.com/photo-rFrAzvhM9QI?auto=format&fit=crop&w=1200&q=80' },
+    url: 'https://images.pexels.com/photos/6817136/pexels-photo-6817136.jpeg?auto=compress&cs=tinysrgb&w=1200' },
   { id: 'p11', category: 'service', title: 'Kỹ thuật bưng bê — Khay & Đĩa đúng chuẩn Fine Dining',
     desc: 'Dùng khay khi mang nhiều đĩa/ly. Đặt đĩa từ bên phải khách, dọn đĩa từ bên phải. Không để âm thanh khi đặt xuống bàn.',
-    url: 'https://images.unsplash.com/photo-H9q_XcRpHNo?auto=format&fit=crop&w=1200&q=80' },
+    url: 'https://images.pexels.com/photos/262978/pexels-photo-262978.jpeg?auto=compress&cs=tinysrgb&w=1200' },
 ];
