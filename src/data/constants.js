@@ -10,11 +10,9 @@ export const STEAK_DONENESS_LEVELS = [
 ];
 
 export const VIDEO_PLAYLIST = [
-  { id: 'v1', category: 'Nghiệp vụ Bàn',  title: 'Hướng dẫn Setup Bàn Âu tiêu chuẩn 2 người',                       duration: '03:15', link: CONFIG.VIDEO_LINKS.v1, iconBg: 'bg-stone-100 text-stone-600' },
-  { id: 'v2', category: 'Nghiệp vụ Bàn',  title: 'Quy trình Chào đón khách & Dẫn bàn (Sequence of Service)',          duration: '02:45', link: CONFIG.VIDEO_LINKS.v2, iconBg: 'bg-[#00a2d5]/10 text-[#00a2d5]' },
-  { id: 'v3', category: 'Nghiệp vụ Bàn',  title: 'Cách bưng bê dọn đĩa chuẩn cao cấp không gây tiếng ồn',             duration: '01:50', link: CONFIG.VIDEO_LINKS.v3, iconBg: 'bg-blue-50 text-blue-600' },
-  { id: 'v4', category: 'Kiến thức Món',  title: 'Phân biệt thực tế 6 cấp độ chín của Steak Bò',                      duration: '04:20', link: CONFIG.VIDEO_LINKS.v4, iconBg: 'bg-indigo-50 text-indigo-600' },
-  { id: 'v5', category: 'Kỹ năng Mềm',   title: 'Phương pháp L.E.A.R.N trong giải quyết khiếu nại khách hàng',        duration: '05:10', link: CONFIG.VIDEO_LINKS.v5, iconBg: 'bg-emerald-50 text-emerald-600' },
+  { id: 'pl1', category: 'Danh sách 1', title: 'Playlist 1 — Đào tạo nghiệp vụ nhà hàng', duration: 'Nhiều tập', link: CONFIG.VIDEO_LINKS.pl1, iconBg: 'bg-[#00a2d5]/10 text-[#00a2d5]' },
+  { id: 'pl2', category: 'Danh sách 2', title: 'Playlist 2 — Kỹ năng phục vụ & chăm sóc khách', duration: 'Nhiều tập', link: CONFIG.VIDEO_LINKS.pl2, iconBg: 'bg-emerald-50 text-emerald-600' },
+  { id: 'pl3', category: 'Danh sách 3', title: 'Playlist 3 — Kiến thức chuyên sâu F&B', duration: 'Nhiều tập', link: CONFIG.VIDEO_LINKS.pl3, iconBg: 'bg-orange-50 text-orange-600' },
 ];
 
 export const PHOTO_GALLERY = [

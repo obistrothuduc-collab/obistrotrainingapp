@@ -36,7 +36,7 @@ export default function TabVideos() {
 
         {/* Playlist */}
         <div className="space-y-2">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-1">Danh sách phát ({VIDEO_PLAYLIST.length} video)</p>
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-1">{VIDEO_PLAYLIST.length} Danh sách Playlist</p>
           {VIDEO_PLAYLIST.map((v, i) => {
             const isActive = v.id === activeId;
             return (
