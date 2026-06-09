@@ -16,7 +16,7 @@ const PLAYLISTS = [
   },
   {
     id:       'pl2',
-    title:    'Học viện Đầu Bếp — Học nấu ăn ngành F&B',
+    title:    'Học viện Đầu Bếp',
     channel:  'Hướng Nghiệp Á Âu',
     count:    '149 video',
     desc:     'Kỹ thuật chế biến món ăn từ cơ bản đến nâng cao, bao gồm xốt, steak, pasta và các món tủ nhà hàng cao cấp.',
