@@ -12,6 +12,7 @@ import TabVideos      from './tabs/TabVideos.jsx';
 import TabPhotos      from './tabs/TabPhotos.jsx';
 import TabTheoryFB    from './tabs/TabTheoryFB.jsx';
 import TabSteakSauces from './tabs/TabSteakSauces.jsx';
+import TabKitchen     from './tabs/TabKitchen.jsx';
 import TabQuiz        from './tabs/TabQuiz.jsx';
 import TabHistory     from './tabs/TabHistory.jsx';
 
@@ -27,6 +28,7 @@ const NAV_ITEMS = [
     { id: 'menu',        icon: Icons.Utensils,   label: 'Thực Đơn (Menu)' },
     { id: 'theory_fb',   icon: Icons.Headphones, label: 'Omotenashi 5★' },
     { id: 'steak_sauces',icon: Icons.BookOpen,   label: 'Nghiệp Vụ F&B' },
+    { id: 'kitchen',     icon: Icons.ChefHat,   label: 'Nghiệp Vụ Bếp' },
     { id: 'videos',      icon: Icons.PlayCircle, label: 'Video Đào Tạo' },
     { id: 'photos',      icon: Icons.Photo,      label: 'Hình Ảnh Đào Tạo' },
   ]},
@@ -90,6 +92,7 @@ export default function App() {
       case 'menu':         return <TabMenu activeMenuCategory={activeMenuCategory} setActiveMenuCategory={setActiveMenuCategory} />;
       case 'theory_fb':    return <TabTheoryFB />;
       case 'steak_sauces': return <TabSteakSauces />;
+      case 'kitchen':      return <TabKitchen />;
       case 'videos':       return <TabVideos />;
       case 'photos':       return <TabPhotos />;
       case 'quiz':         return <TabQuiz />;

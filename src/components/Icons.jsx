@@ -12,6 +12,7 @@ export const Icons = {
   Utensils: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>,
   Photo: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>,
   Headphones: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 18.75a6 6 0 006-6v-1.5a6 6 0 00-12 0v1.5a6 6 0 006 6zM4 11.25a2 2 0 012-2h.75a2 2 0 012 2v3.5a2 2 0 01-2 2H6a2 2 0 01-2-2v-3.5zm11.25 0a2 2 0 012-2H18a2 2 0 012 2v3.5a2 2 0 01-2 2h-.75a2 2 0 01-2-2v-3.5z" /></svg>,
+  ChefHat: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 3a4 4 0 014 4c0 .34-.04.67-.1 1H8.1A4.02 4.02 0 018 7a4 4 0 014-4zm6 5H6a1 1 0 00-1 1v1h14V9a1 1 0 00-1-1zM7 11v8a1 1 0 001 1h8a1 1 0 001-1v-8H7z" /></svg>,
 };
 
 export const BrandLogo = () => (
