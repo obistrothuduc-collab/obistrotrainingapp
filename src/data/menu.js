@@ -27,15 +27,6 @@ export const MENU_DATA = {
     { name: "Mì Ý pho mai bò xốt kem",        price: "125.000đ", desc: "Dành cho bé (Kid Menu)." },
     { name: "Mì Ý bò bằm đặc biệt",          price: "79.000đ",  oldPrice: "99.000đ", desc: "Bolognese truyền thống nhiều thịt bò." },
   ],
-  noodles_rice: [
-    { name: "Nui / Mì xào bò Taiwan",        price: "99.000đ",  desc: "Bò Wagyu xào mềm, tương Taiwan ngọt mặn đậm đà, rau cải giòn." },
-    { name: "Hủ tiếu xào bò",                price: "89.000đ",  desc: "Hủ tiếu dai mềm xào bò mỡ hành phi thơm, trứng chiên." },
-    { name: "Cơm xào bò kiểu Taiwan",         price: "89.000đ",  desc: "Cơm rang bò Wagyu tương Taiwan, trứng bác, hành lá." },
-    { name: "Cơm xào hải sản",               price: "99.000đ",  desc: "Cơm rang tôm vẹm mực, nước mắm tỏi ớt thơm nức." },
-    { name: "Cơm chiên trứng bơ tỏi",        price: "75.000đ",  desc: "Cơm rang bơ tỏi phi vàng, trứng chiên, hành phi giòn. (Kid Menu)" },
-    { name: "Bánh mì kẹp bò Wagyu",          price: "99.000đ",  desc: "Bánh mì brioche nướng giòn, bò Wagyu áp chảo, xốt đặc biệt, rau tươi." },
-    { name: "Bánh mì kẹp gà nướng BBQ",      price: "85.000đ",  desc: "Gà nướng BBQ mật ong, rau sống, cà chua bi." },
-  ],
   salads_soups: [
     { name: "Salad hải sản đặc biệt",           price: "119.000đ", desc: "Vẹm xanh, tôm tươi, cá hồi áp chảo tươi ngon." },
     { name: "Salad cá trích áp chảo rong nho",  price: "109.000đ", desc: "Độc đáo giòn tan sần sật mát lành." },

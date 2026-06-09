@@ -63,16 +63,24 @@ export default function TabConduct() {
         </p>
         <ul className="text-xs text-orange-900 space-y-2 list-decimal pl-4">
           <li>
-            <strong>Tạm dừng nhận order các món phụ:</strong> Nui / Mì xào bò Taiwan, hủ tiếu xào
-            bò, tất cả các nhóm món cơm xào và bánh mì kẹp.
+            <strong>Tạm dừng nhận order các món làm lâu:</strong> Bánh mì nướng và các món có thời
+            gian chế biến dài — thông báo khéo léo cho khách biết để tránh kỳ vọng sai.
           </li>
           <li>
-            <strong>Đẩy mạnh tư vấn Set Menu:</strong> Giới thiệu ngay Combo Family, Set Bestie
-            Bond để tăng tốc phục vụ.
+            <strong>Không nhận thêm khách khi quá tải:</strong> Ưu tiên phục vụ tốt khách đang có
+            hơn là nhận thêm rồi để tất cả chờ lâu.
           </li>
           <li>
-            Nếu khách không chịu dùng set menu, phục vụ phải khéo léo định hướng khách gọi sang
-            món <strong>Steak bò</strong> và <strong>Mì Ý chính</strong>.
+            <strong>Ưu tiên xử lý món gấp trước:</strong> Phối hợp chặt với bếp, báo ngay các bàn
+            đã chờ quá lâu để bếp ưu tiên lên món sớm hơn.
+          </li>
+          <li>
+            <strong>Không bán món làm lâu:</strong> Khéo léo hướng khách sang các món ra nhanh như
+            Steak bò, Mì Ý, Set Menu có sẵn.
+          </li>
+          <li>
+            <strong>Bàn nào lâu ra món — tặng ngay:</strong> Nếu bàn khách chờ quá lâu, chủ động
+            tặng khai vị hoặc nước uống để giữ thiện cảm, báo Quản lý phê duyệt ngay tại chỗ.
           </li>
         </ul>
       </div>
