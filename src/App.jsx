@@ -115,8 +115,8 @@ export default function App() {
 
           {/* Logo + tên */}
           <div className="flex items-center gap-3 shrink-0 self-start md:self-auto">
-            <div className="w-10 h-10 rounded-xl border border-orange-200 bg-gradient-to-br from-white to-orange-50 flex items-center justify-center shadow-sm">
-              <BrandLogo />
+            <div className="w-10 h-10 shrink-0">
+              <img src="/logo.png" alt="Ơ Bistro" className="w-full h-full object-contain" />
             </div>
             <div>
               <h1 className="font-bold text-sm tracking-tight text-slate-950 flex items-center gap-2">
