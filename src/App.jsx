@@ -25,7 +25,7 @@ const NAV_ITEMS = [
   ]},
   { group: 'NGHIỆP VỤ NHÀ HÀNG', items: [
     { id: 'menu',        icon: Icons.Utensils,   label: 'Thực Đơn (Menu)' },
-    { id: 'theory_fb',   icon: Icons.Headphones, label: 'Lý Thuyết F&B 5★' },
+    { id: 'theory_fb',   icon: Icons.Headphones, label: 'Omotenashi 5★' },
     { id: 'steak_sauces',icon: Icons.BookOpen,   label: 'Nghiệp Vụ F&B' },
     { id: 'videos',      icon: Icons.PlayCircle, label: 'Video Đào Tạo' },
     { id: 'photos',      icon: Icons.Photo,      label: 'Hình Ảnh Đào Tạo' },
