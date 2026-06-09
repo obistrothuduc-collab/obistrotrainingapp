@@ -7,6 +7,7 @@ const CATEGORIES = [
   { id: 'combos',       label: '🍽️ Set Menu',       color: 'text-violet-600',  activeBg: 'bg-violet-500' },
   { id: 'steaks',       label: '🥩 Steak & Bò Né',  color: 'text-orange-600',  activeBg: 'bg-orange-500' },
   { id: 'pastas',       label: '🍝 Mì Ý',           color: 'text-yellow-700',  activeBg: 'bg-yellow-500' },
+  { id: 'noodles_rice', label: '🍜 Mì Xào & Cơm',   color: 'text-teal-600',    activeBg: 'bg-teal-500' },
   { id: 'salads_soups', label: '🥗 Salad & Súp',    color: 'text-emerald-600', activeBg: 'bg-emerald-500' },
   { id: 'snacks',       label: '🍟 Khai Vị',        color: 'text-amber-600',   activeBg: 'bg-amber-500' },
   { id: 'drinks',       label: '🍹 Đồ Uống',        color: 'text-[#00a2d5]',   activeBg: 'bg-[#00a2d5]' },

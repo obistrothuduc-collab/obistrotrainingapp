@@ -68,7 +68,15 @@ export default function TabQuiz() {
     }
   };
 
-  const retry = () => { setPhase('name'); setAnswers({}); setScore(0); };
+  // Thi lại: giữ nguyên tên, bốc đề mới, vào thẳng quiz
+  const retry = () => {
+    setQuestions(pickQuestions());
+    setAnswers({});
+    setScore(0);
+    setShowExplains(false);
+    setSubmitMsg('');
+    setPhase('quiz');
+  };
 
   // ── PHASE: name ─────────────────────────────────────────────────────────────
   if (phase === 'name') return (
@@ -117,13 +125,18 @@ export default function TabQuiz() {
 
       {/* Score card */}
       <div className={`p-8 rounded-2xl text-center space-y-3 border-2 ${passed ? 'bg-emerald-50 border-emerald-300' : 'bg-red-50 border-red-300'}`}>
-        <div className="text-5xl">{passed ? '🏆' : '📖'}</div>
+        <div className="text-5xl">{passed ? '🏆' : '😓'}</div>
         <p className="text-sm font-bold text-slate-600">{staffName}</p>
         <div className={`text-6xl font-black ${passed ? 'text-emerald-600' : 'text-red-500'}`}>{score}</div>
         <p className="text-sm font-bold text-slate-600">điểm / 100</p>
         <div className={`inline-block px-4 py-1.5 rounded-full text-xs font-bold ${passed ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'}`}>
-          {passed ? '✅ ĐẠT — Hoàn thành xuất sắc!' : '❌ CHƯA ĐẠT — Ôn lại và thi lại nhé!'}
+          {passed ? '✅ ĐẠT — Hoàn thành xuất sắc!' : `❌ CHƯA ĐẠT — Cần đúng tối thiểu 9/10 câu (${PASS_SCORE} điểm)`}
         </div>
+        {!passed && (
+          <p className="text-xs text-red-700 font-semibold bg-red-100 rounded-xl px-4 py-2">
+            Hệ thống yêu cầu thi lại cho đến khi đạt {PASS_SCORE} điểm. Xem đáp án bên dưới, ôn kỹ rồi bấm thi lại nhé!
+          </p>
+        )}
         {submitting && <p className="text-xs text-slate-400 animate-pulse">Đang ghi điểm...</p>}
         {submitMsg && <p className="text-xs text-slate-500">{submitMsg}</p>}
       </div>
@@ -182,12 +195,20 @@ export default function TabQuiz() {
       </div>
 
       <div className="flex gap-3">
-        <button onClick={retry} className="flex-1 bg-[#00a2d5] hover:bg-[#0d4a7c] text-white font-bold text-sm py-3 rounded-xl transition-all">
-          Thi lại
+        <button
+          onClick={retry}
+          className={`font-bold text-sm py-3 rounded-xl transition-all text-white ${passed ? 'flex-1 bg-slate-500 hover:bg-slate-600' : 'w-full bg-red-500 hover:bg-red-600 animate-pulse'}`}
+        >
+          {passed ? 'Thi lại (đề mới)' : '🔄 Thi lại ngay — đề mới đang chờ!'}
         </button>
-        <button onClick={() => setPhase('name')} className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm py-3 rounded-xl transition-all">
-          Nhân viên khác
-        </button>
+        {passed && (
+          <button
+            onClick={() => { setPhase('name'); setStaffName(''); setAnswers({}); setScore(0); }}
+            className="flex-1 bg-[#00a2d5] hover:bg-[#0d4a7c] text-white font-bold text-sm py-3 rounded-xl transition-all"
+          >
+            Nhân viên khác
+          </button>
+        )}
       </div>
     </div>
   );

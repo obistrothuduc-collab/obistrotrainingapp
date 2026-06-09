@@ -29,6 +29,31 @@ export default function TabHome({ goTo }) {
         </div>
       </div>
 
+      {/* 4 câu cửa miệng bắt buộc */}
+      <div className="rounded-2xl border-2 border-[#00a2d5]/30 bg-gradient-to-r from-[#00a2d5]/8 to-cyan-50/60 p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="text-base">💬</span>
+          <h3 className="font-bold text-slate-900 text-sm">4 câu nói cửa miệng BẮT BUỘC — nhắc lại mỗi đầu ca</h3>
+          <span className="ml-auto text-[10px] font-bold text-[#00a2d5] bg-[#00a2d5]/10 px-2 py-0.5 rounded-full whitespace-nowrap">Thương hiệu Ơ Bistro</span>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {[
+            { num: '1', phrase: '"Em xin phép..."', hint: 'Trước khi dọn, rót, dẫn bàn — luôn xin phép trước' },
+            { num: '2', phrase: '"Dạ để em kiểm tra ngay cho mình ạ."', hint: 'Khi khách hỏi bất cứ điều gì chưa chắc' },
+            { num: '3', phrase: '"Em xin lỗi vì điều này, em sẽ xử lý ngay ạ."', hint: 'Khi có sự cố — không đổ lỗi, không giải thích dài' },
+            { num: '4', phrase: '"Em sẽ báo lại mình trong ít phút ạ."', hint: 'Khi cần thời gian xử lý — không để khách chờ trong im lặng' },
+          ].map(({ num, phrase, hint }) => (
+            <div key={num} className="bg-white/80 backdrop-blur-sm rounded-xl p-3.5 border border-[#00a2d5]/15 space-y-1.5">
+              <div className="flex items-center gap-2">
+                <span className="w-5 h-5 rounded-full bg-[#00a2d5] text-white text-[10px] font-black flex items-center justify-center shrink-0">{num}</span>
+                <p className="font-bold text-slate-900 text-xs leading-snug">{phrase}</p>
+              </div>
+              <p className="text-[10px] text-slate-500 leading-relaxed pl-7">{hint}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* 4 quick-link cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="p-6 rounded-2xl border border-slate-100 bg-slate-50/50">
