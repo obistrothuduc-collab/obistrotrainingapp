@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { AUDIO_LESSON_MODULES, AUDIO_LESSONS_TEXT } from '../data/lessons.js';
 
 const SECTIONS = [
   { id: 'levels',    emoji: '🏅', label: '4 Cấp độ phục vụ' },
@@ -6,6 +7,7 @@ const SECTIONS = [
   { id: 'scripting', emoji: '💬', label: 'Lời thoại chuẩn' },
   { id: 'donts',     emoji: '📋', label: 'NÊN & KHÔNG NÊN' },
   { id: 'last',      emoji: '🛟', label: 'Xử lý khiếu nại' },
+  { id: 'audio',     emoji: '🎧', label: 'Bài giảng Audio' },
 ];
 
 // ── Section 1 ────────────────────────────────────────────────────────────────
@@ -142,22 +144,22 @@ function SectionScripting() {
   const scripts = [
     {
       context: 'Chào đón & tư vấn món',
-      bad: 'Ngồi đây. Menu đây. Gọi gì không?',
+      bad: `"Chào anh chị! Mời anh chị ngồi đây nha. Đây là menu, anh chị xem qua rồi gọi em nhé." (nói đúng nhưng đứng im, không kéo ghế, không nhắc ưu đãi, không hẹn quay lại)`,
       good: 'Ơ Bistro xin chào anh chị ạ! Em xin phép kéo ghế cho chị. Đây là menu của nhà hàng — trang đầu có set tiết kiệm hơn cho nhóm mình. Mình xem thử nhé, khoảng 2 phút em quay lại tư vấn ạ.',
     },
     {
       context: 'Xác nhận độ chín Steak',
-      bad: 'Chín mấy? Tái hay chín kỹ?',
+      bad: `"Anh/chị muốn steak chín tới hay chín kỹ ạ?" (hỏi nhưng không giải thích sự khác nhau, không gợi ý độ chín phù hợp)`,
       good: 'Dạ Ribeye của mình dùng độ chín nào ạ? Em gợi ý Medium Rare — thịt còn hồng nhẹ ở giữa, mềm và ngọt nhất. Hoặc anh thích chín hơn một chút thì Medium cũng rất hợp ạ.',
     },
     {
       context: 'Xin phép dọn đĩa trống',
-      bad: 'Dọn chưa? (rồi cầm luôn không hỏi)',
+      bad: `"Em dọn cái này không ạ?" (vừa hỏi vừa đã tay cầm đĩa, không chờ khách trả lời, không kiểm tra khách ăn xong chưa)`,
       good: 'Em xin phép thu bớt đĩa này để bàn mình rộng hơn nhé ạ — mình dùng xong phần này rồi chứ ạ?',
     },
     {
       context: 'Xin lỗi khi lên món muộn',
-      bad: 'Đợi thêm chút nha, bếp đang bận.',
+      bad: `"Dạ xin lỗi anh/chị, món đang chuẩn bị ạ, anh chị chờ thêm chút nha." (xin lỗi nhưng không nói rõ thêm bao lâu, không đề nghị gì bù đắp, rồi quay đi)`,
       good: 'Dạ em xin lỗi mình vì món đang lên hơi chậm hơn dự kiến. Em vừa kiểm tra bếp — món của mình sẽ ra trong khoảng 5 phút nữa. Trong lúc chờ em xin phép gửi thêm bánh mì nướng cho mình dùng tạm ạ.',
     },
   ];
@@ -182,7 +184,7 @@ function SectionScripting() {
               </div>
               <div className="p-3 bg-emerald-50/60 space-y-1.5">
                 <p className="text-[9px] font-black text-emerald-600 uppercase tracking-wide flex items-center gap-1">
-                  ✅ BẮT BUỘC NÓI — Phong cách 5★ & Pizza 4P's
+                  ✅ BẮT BUỘC NÓI — Phong cách 5★ Ơ Bistro
                 </p>
                 <p className="text-xs text-emerald-900 font-medium leading-relaxed">"{s.good}"</p>
               </div>
@@ -309,6 +311,180 @@ function SectionLAST() {
   );
 }
 
+// ── Section 6: Audio ─────────────────────────────────────────────────────────
+function makeChunks(text) {
+  const raw = text.split(/(?<=[.!?])\s+/).filter(s => s.trim());
+  const chunks = [];
+  let cur = '';
+  for (const s of raw) {
+    if (cur.length + s.length > 220 && cur.length > 0) { chunks.push(cur.trim()); cur = s; }
+    else { cur += (cur ? ' ' : '') + s; }
+  }
+  if (cur.trim()) chunks.push(cur.trim());
+  return chunks;
+}
+
+function getPreferredVoice() {
+  const voices = window.speechSynthesis.getVoices();
+  const vi = voices.filter(v => v.lang === 'vi-VN' || v.lang.startsWith('vi'));
+  // Ưu tiên Google Vietnamese (thường giọng nữ miền Nam trên Android/Chrome)
+  const google = vi.find(v => /google/i.test(v.name));
+  if (google) return google;
+  // Tên phổ biến giọng nữ trên iOS
+  const female = vi.find(v => /linh|lan|mai|thu|hoa|female|woman/i.test(v.name));
+  return female || vi[0] || null;
+}
+
+function SectionAudio() {
+  const [activeId, setActiveId]   = useState(AUDIO_LESSON_MODULES[0].id);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPaused, setIsPaused]   = useState(false);
+  const [progress, setProgress]   = useState({ cur: 0, total: 0 });
+  const chunksRef    = useRef([]);
+  const activeRef    = useRef(true);
+  const keepAliveRef = useRef(null);
+
+  const lesson = AUDIO_LESSON_MODULES.find(l => l.id === activeId);
+
+  const stop = () => {
+    activeRef.current = false;
+    window.speechSynthesis.cancel();
+    if (keepAliveRef.current) clearInterval(keepAliveRef.current);
+    setIsPlaying(false); setIsPaused(false); setProgress({ cur: 0, total: 0 });
+  };
+
+  const speakIdx = (idx) => {
+    if (!activeRef.current || idx >= chunksRef.current.length) { stop(); return; }
+    setProgress({ cur: idx + 1, total: chunksRef.current.length });
+    const u = new SpeechSynthesisUtterance(chunksRef.current[idx]);
+    u.lang = 'vi-VN';
+    u.rate = 0.88;
+    u.pitch = 1.2; // giọng nữ
+    const voice = getPreferredVoice();
+    if (voice) u.voice = voice;
+    u.onend = () => { if (activeRef.current) speakIdx(idx + 1); };
+    u.onerror = () => { if (activeRef.current) speakIdx(idx + 1); };
+    window.speechSynthesis.speak(u);
+  };
+
+  const play = () => {
+    chunksRef.current = makeChunks(AUDIO_LESSONS_TEXT[activeId]);
+    activeRef.current = true;
+    window.speechSynthesis.cancel();
+    if (keepAliveRef.current) clearInterval(keepAliveRef.current);
+    keepAliveRef.current = setInterval(() => {
+      if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+        window.speechSynthesis.pause(); window.speechSynthesis.resume();
+      }
+    }, 9000);
+    setIsPlaying(true); setIsPaused(false);
+    // Đợi voices load xong trên lần đầu
+    if (window.speechSynthesis.getVoices().length === 0) {
+      window.speechSynthesis.onvoiceschanged = () => speakIdx(0);
+    } else {
+      speakIdx(0);
+    }
+  };
+
+  const togglePause = () => {
+    if (isPaused) { window.speechSynthesis.resume(); setIsPaused(false); }
+    else          { window.speechSynthesis.pause();  setIsPaused(true); }
+  };
+
+  const selectLesson = (id) => { stop(); setActiveId(id); };
+
+  useEffect(() => () => {
+    activeRef.current = false;
+    window.speechSynthesis.cancel();
+    if (keepAliveRef.current) clearInterval(keepAliveRef.current);
+  }, []);
+
+  return (
+    <div className="space-y-4">
+      <div className="p-4 bg-[#00a2d5]/8 border border-[#00a2d5]/20 rounded-xl text-xs text-slate-700 leading-relaxed">
+        <strong className="text-[#00a2d5]">🎧 Nghe & nhại lại:</strong> Mở bài giảng, nghe từng câu rồi nhại lại ngay — đây là cách luyện phản xạ ngôn ngữ nhanh nhất. Mỗi sáng trước ca 5 phút.
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        {/* Danh sách bài */}
+        <div className="space-y-1.5">
+          {AUDIO_LESSON_MODULES.map((l) => {
+            const active = l.id === activeId;
+            return (
+              <button key={l.id} onClick={() => selectLesson(l.id)}
+                className={`w-full text-left px-3 py-2.5 rounded-xl text-xs transition-all border ${
+                  active ? 'bg-[#00a2d5] text-white border-transparent shadow-sm font-semibold'
+                         : 'bg-white text-slate-600 border-slate-100 hover:border-slate-200 hover:bg-slate-50'}`}>
+                <span className={`text-[9px] font-bold block mb-0.5 ${active ? 'text-white/70' : 'text-slate-400'}`}>{l.tag}</span>
+                {l.shortTitle}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Nội dung bài + control */}
+        <div className="lg:col-span-3 space-y-3">
+          <div className="p-4 rounded-2xl border border-[#00a2d5]/20 bg-gradient-to-br from-[#00a2d5]/5 to-white space-y-2.5">
+            <span className="text-[10px] font-bold text-[#00a2d5] bg-[#00a2d5]/10 px-2 py-0.5 rounded-full">{lesson.tag}</span>
+            <h3 className="font-bold text-slate-900 text-sm mt-1">{lesson.title}</h3>
+            <div className="space-y-1.5 text-xs text-slate-600">
+              <p><strong className="text-slate-800">🎯</strong> {lesson.goal}</p>
+              <p><strong className="text-slate-800">📌</strong> {lesson.principle}</p>
+            </div>
+          </div>
+
+          {/* Hội thoại mẫu */}
+          <div className="p-4 rounded-xl border border-slate-100 bg-white space-y-2">
+            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Hội thoại mẫu</p>
+            {lesson.dialogue.slice(0, 4).map(([role, line], i) => {
+              const isStaff = role === 'NV' || role.startsWith('NV');
+              return (
+                <div key={i} className={`flex gap-2 items-start ${!isStaff ? 'flex-row-reverse' : ''}`}>
+                  <span className={`text-[9px] font-bold shrink-0 mt-0.5 px-1.5 py-0.5 rounded ${isStaff ? 'bg-[#00a2d5]/10 text-[#00a2d5]' : 'bg-orange-100 text-orange-700'}`}>
+                    {isStaff ? 'NV' : 'KH'}
+                  </span>
+                  <p className={`text-xs leading-relaxed ${isStaff ? 'text-slate-700' : 'text-slate-500 italic'}`}>{line}</p>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* TTS control */}
+          <div className="p-4 rounded-2xl bg-slate-900 text-white space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">🎙️ Sách nói — Giọng nữ miền Nam</span>
+              {isPlaying && <span className="text-[10px] text-slate-400">{progress.cur}/{progress.total} đoạn</span>}
+            </div>
+            {isPlaying && progress.total > 0 && (
+              <div className="w-full bg-slate-700 rounded-full h-1.5">
+                <div className="bg-[#00a2d5] h-1.5 rounded-full transition-all duration-300"
+                  style={{ width: `${(progress.cur / progress.total) * 100}%` }} />
+              </div>
+            )}
+            <div className="flex gap-2">
+              {!isPlaying ? (
+                <button onClick={play} className="flex-1 bg-[#00a2d5] hover:bg-[#0d4a7c] text-white font-bold text-xs py-2.5 px-4 rounded-xl transition-colors">
+                  ▶ Phát bài giảng
+                </button>
+              ) : (
+                <>
+                  <button onClick={togglePause} className="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs py-2.5 px-4 rounded-xl transition-colors">
+                    {isPaused ? '▶ Tiếp tục' : '⏸ Tạm dừng'}
+                  </button>
+                  <button onClick={stop} className="bg-slate-600 hover:bg-slate-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl transition-colors">⏹</button>
+                </>
+              )}
+            </div>
+            <p className="text-[10px] text-slate-500 text-center">
+              {isPlaying && isPaused ? 'Đang tạm dừng...' : isPlaying ? 'Đang phát — nghe rồi nhại lại từng câu' : 'Chất lượng giọng phụ thuộc vào thiết bị. Trên Android/Chrome thường rõ nhất.'}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function TabTheoryFB() {
   const [activeSection, setActiveSection] = useState('levels');
@@ -320,6 +496,7 @@ export default function TabTheoryFB() {
       case 'scripting': return <SectionScripting />;
       case 'donts':     return <SectionDonts />;
       case 'last':      return <SectionLAST />;
+      case 'audio':     return <SectionAudio />;
       default:          return null;
     }
   };
@@ -332,7 +509,7 @@ export default function TabTheoryFB() {
           🌟 OMOTENASHI — Cẩm nang Phục vụ 5★ Ơ Bistro
         </h2>
         <p className="text-xs text-slate-500 leading-relaxed">
-          Chuẩn Pizza 4P's & nhà hàng fine-dining — học 1–2 tuần là có tác phong chuyên nghiệp thật sự.
+          Chuẩn nhà hàng fine-dining — học 1–2 tuần là có tác phong chuyên nghiệp thật sự.
         </p>
       </div>
 
