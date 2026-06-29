@@ -318,9 +318,18 @@ async function fetchFptTTS(text) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ text }),
   });
-  const json = await res.json();
-  if (json.error !== 0) throw new Error(json.message || 'TTS error');
-  return json.async;
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || `HTTP ${res.status}`);
+  }
+  const ct = res.headers.get('content-type') || '';
+  if (ct.startsWith('audio/')) {
+    const blob = await res.blob();
+    return URL.createObjectURL(blob);
+  }
+  const data = await res.json();
+  if (data.error !== 0) throw new Error(data.message || 'TTS error');
+  return data.async;
 }
 
 function splitChunks(text, max = 2000) {
