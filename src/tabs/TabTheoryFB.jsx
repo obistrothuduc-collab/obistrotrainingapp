@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
 import { AUDIO_LESSON_MODULES, AUDIO_LESSONS_TEXT } from '../data/lessons.js';
-import { CONFIG } from '../data/config.js';
 
 const SECTIONS = [
   { id: 'levels',    emoji: '🏅', label: '4 Cấp độ phục vụ' },
@@ -314,10 +313,10 @@ function SectionLAST() {
 
 // ── Section 6: Audio (FPT.AI TTS — giọng nữ miền Nam) ──────────────────────
 async function fetchFptTTS(text) {
-  const res = await fetch('https://api.fpt.ai/hmi/tts/v5', {
+  const res = await fetch('/api/tts', {
     method: 'POST',
-    headers: { 'api-key': CONFIG.FPT_TTS_KEY, 'voice': 'linhsan', 'speed': '0', 'prosody': '0' },
-    body: text,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text }),
   });
   const json = await res.json();
   if (json.error !== 0) throw new Error(json.message || 'TTS error');
