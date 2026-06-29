@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { AUDIO_LESSON_MODULES, AUDIO_LESSONS_TEXT } from '../data/lessons.js';
+import { CONFIG } from '../data/config.js';
 
 const SECTIONS = [
   { id: 'levels',    emoji: '🏅', label: '4 Cấp độ phục vụ' },
@@ -311,96 +312,104 @@ function SectionLAST() {
   );
 }
 
-// ── Section 6: Audio ─────────────────────────────────────────────────────────
-function makeChunks(text) {
-  const raw = text.split(/(?<=[.!?])\s+/).filter(s => s.trim());
-  const chunks = [];
-  let cur = '';
-  for (const s of raw) {
-    if (cur.length + s.length > 220 && cur.length > 0) { chunks.push(cur.trim()); cur = s; }
-    else { cur += (cur ? ' ' : '') + s; }
-  }
-  if (cur.trim()) chunks.push(cur.trim());
-  return chunks;
+// ── Section 6: Audio (FPT.AI TTS — giọng nữ miền Nam) ──────────────────────
+async function fetchFptTTS(text) {
+  const res = await fetch('https://api.fpt.ai/hmi/tts/v5', {
+    method: 'POST',
+    headers: { 'api-key': CONFIG.FPT_TTS_KEY, 'voice': 'linhsan', 'speed': '0', 'prosody': '0' },
+    body: text,
+  });
+  const json = await res.json();
+  if (json.error !== 0) throw new Error(json.message || 'TTS error');
+  return json.async;
 }
 
-function getPreferredVoice() {
-  const voices = window.speechSynthesis.getVoices();
-  const vi = voices.filter(v => v.lang === 'vi-VN' || v.lang.startsWith('vi'));
-  // Ưu tiên Google Vietnamese (thường giọng nữ miền Nam trên Android/Chrome)
-  const google = vi.find(v => /google/i.test(v.name));
-  if (google) return google;
-  // Tên phổ biến giọng nữ trên iOS
-  const female = vi.find(v => /linh|lan|mai|thu|hoa|female|woman/i.test(v.name));
-  return female || vi[0] || null;
+function splitChunks(text, max = 2000) {
+  if (text.length <= max) return [text];
+  const out = [];
+  let start = 0;
+  while (start < text.length) {
+    let end = Math.min(start + max, text.length);
+    if (end < text.length) {
+      const cut = text.lastIndexOf('. ', end);
+      if (cut > start + 400) end = cut + 1;
+    }
+    out.push(text.slice(start, end).trim());
+    start = end;
+  }
+  return out;
 }
 
 function SectionAudio() {
   const [activeId, setActiveId]   = useState(AUDIO_LESSON_MODULES[0].id);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isPaused, setIsPaused]   = useState(false);
-  const [progress, setProgress]   = useState({ cur: 0, total: 0 });
-  const chunksRef    = useRef([]);
-  const activeRef    = useRef(true);
-  const keepAliveRef = useRef(null);
+  const [status, setStatus]       = useState('idle'); // idle|loading|playing|paused|error
+  const [chunkInfo, setChunkInfo] = useState({ cur: 0, total: 0 });
+  const [errMsg, setErrMsg]       = useState('');
+  const audioRef    = useRef(null);
+  const chunksRef   = useRef([]);
+  const urlCacheRef = useRef({});
+  const activeRef   = useRef(false);
 
   const lesson = AUDIO_LESSON_MODULES.find(l => l.id === activeId);
 
-  const stop = () => {
+  const stopAll = () => {
     activeRef.current = false;
-    window.speechSynthesis.cancel();
-    if (keepAliveRef.current) clearInterval(keepAliveRef.current);
-    setIsPlaying(false); setIsPaused(false); setProgress({ cur: 0, total: 0 });
+    if (audioRef.current) { audioRef.current.pause(); audioRef.current.src = ''; }
+    setStatus('idle');
+    setChunkInfo({ cur: 0, total: 0 });
   };
 
-  const speakIdx = (idx) => {
-    if (!activeRef.current || idx >= chunksRef.current.length) { stop(); return; }
-    setProgress({ cur: idx + 1, total: chunksRef.current.length });
-    const u = new SpeechSynthesisUtterance(chunksRef.current[idx]);
-    u.lang = 'vi-VN';
-    u.rate = 0.88;
-    u.pitch = 1.2; // giọng nữ
-    const voice = getPreferredVoice();
-    if (voice) u.voice = voice;
-    u.onend = () => { if (activeRef.current) speakIdx(idx + 1); };
-    u.onerror = () => { if (activeRef.current) speakIdx(idx + 1); };
-    window.speechSynthesis.speak(u);
-  };
-
-  const play = () => {
-    chunksRef.current = makeChunks(AUDIO_LESSONS_TEXT[activeId]);
-    activeRef.current = true;
-    window.speechSynthesis.cancel();
-    if (keepAliveRef.current) clearInterval(keepAliveRef.current);
-    keepAliveRef.current = setInterval(() => {
-      if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
-        window.speechSynthesis.pause(); window.speechSynthesis.resume();
+  const playFrom = async (idx) => {
+    if (!activeRef.current) return;
+    const chunks = chunksRef.current;
+    if (idx >= chunks.length) { setStatus('idle'); setChunkInfo({ cur: 0, total: 0 }); return; }
+    setChunkInfo({ cur: idx + 1, total: chunks.length });
+    const cacheKey = `${activeId}-${idx}`;
+    try {
+      let url = urlCacheRef.current[cacheKey];
+      if (!url) {
+        url = await fetchFptTTS(chunks[idx]);
+        urlCacheRef.current[cacheKey] = url;
       }
-    }, 9000);
-    setIsPlaying(true); setIsPaused(false);
-    // Đợi voices load xong trên lần đầu
-    if (window.speechSynthesis.getVoices().length === 0) {
-      window.speechSynthesis.onvoiceschanged = () => speakIdx(0);
-    } else {
-      speakIdx(0);
+      if (!activeRef.current) return;
+      const audio = audioRef.current;
+      audio.src = url;
+      audio.onended = () => { if (activeRef.current) playFrom(idx + 1); };
+      audio.onerror = () => { if (activeRef.current) playFrom(idx + 1); };
+      await audio.play();
+      setStatus('playing');
+    } catch {
+      setStatus('error');
+      setErrMsg('Không tải được giọng đọc — kiểm tra kết nối mạng và thử lại.');
+      activeRef.current = false;
     }
   };
 
-  const togglePause = () => {
-    if (isPaused) { window.speechSynthesis.resume(); setIsPaused(false); }
-    else          { window.speechSynthesis.pause();  setIsPaused(true); }
+  const play = async () => {
+    stopAll();
+    setErrMsg('');
+    chunksRef.current = splitChunks(AUDIO_LESSONS_TEXT[activeId]);
+    activeRef.current = true;
+    setStatus('loading');
+    await playFrom(0);
   };
 
-  const selectLesson = (id) => { stop(); setActiveId(id); };
+  const togglePause = () => {
+    const audio = audioRef.current;
+    if (status === 'paused') { audio.play(); setStatus('playing'); }
+    else                     { audio.pause(); setStatus('paused'); }
+  };
+
+  const selectLesson = (id) => { stopAll(); setActiveId(id); setErrMsg(''); };
 
   useEffect(() => () => {
     activeRef.current = false;
-    window.speechSynthesis.cancel();
-    if (keepAliveRef.current) clearInterval(keepAliveRef.current);
+    if (audioRef.current) audioRef.current.pause();
   }, []);
 
   return (
     <div className="space-y-4">
+      <audio ref={audioRef} />
       <div className="p-4 bg-[#00a2d5]/8 border border-[#00a2d5]/20 rounded-xl text-xs text-slate-700 leading-relaxed">
         <strong className="text-[#00a2d5]">🎧 Nghe & nhại lại:</strong> Mở bài giảng, nghe từng câu rồi nhại lại ngay — đây là cách luyện phản xạ ngôn ngữ nhanh nhất. Mỗi sáng trước ca 5 phút.
       </div>
@@ -453,30 +462,40 @@ function SectionAudio() {
           <div className="p-4 rounded-2xl bg-slate-900 text-white space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">🎙️ Sách nói — Giọng nữ miền Nam</span>
-              {isPlaying && <span className="text-[10px] text-slate-400">{progress.cur}/{progress.total} đoạn</span>}
+              {(status === 'playing' || status === 'paused') && chunkInfo.total > 1 && (
+                <span className="text-[10px] text-slate-400">{chunkInfo.cur}/{chunkInfo.total} đoạn</span>
+              )}
             </div>
-            {isPlaying && progress.total > 0 && (
+            {(status === 'playing' || status === 'paused') && chunkInfo.total > 0 && (
               <div className="w-full bg-slate-700 rounded-full h-1.5">
                 <div className="bg-[#00a2d5] h-1.5 rounded-full transition-all duration-300"
-                  style={{ width: `${(progress.cur / progress.total) * 100}%` }} />
+                  style={{ width: `${(chunkInfo.cur / chunkInfo.total) * 100}%` }} />
               </div>
             )}
             <div className="flex gap-2">
-              {!isPlaying ? (
+              {(status === 'idle' || status === 'error') ? (
                 <button onClick={play} className="flex-1 bg-[#00a2d5] hover:bg-[#0d4a7c] text-white font-bold text-xs py-2.5 px-4 rounded-xl transition-colors">
                   ▶ Phát bài giảng
+                </button>
+              ) : status === 'loading' ? (
+                <button disabled className="flex-1 bg-slate-700 text-slate-400 font-bold text-xs py-2.5 px-4 rounded-xl cursor-not-allowed animate-pulse">
+                  ⏳ Đang tải giọng đọc...
                 </button>
               ) : (
                 <>
                   <button onClick={togglePause} className="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs py-2.5 px-4 rounded-xl transition-colors">
-                    {isPaused ? '▶ Tiếp tục' : '⏸ Tạm dừng'}
+                    {status === 'paused' ? '▶ Tiếp tục' : '⏸ Tạm dừng'}
                   </button>
-                  <button onClick={stop} className="bg-slate-600 hover:bg-slate-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl transition-colors">⏹</button>
+                  <button onClick={stopAll} className="bg-slate-600 hover:bg-slate-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl transition-colors">⏹</button>
                 </>
               )}
             </div>
             <p className="text-[10px] text-slate-500 text-center">
-              {isPlaying && isPaused ? 'Đang tạm dừng...' : isPlaying ? 'Đang phát — nghe rồi nhại lại từng câu' : 'Chất lượng giọng phụ thuộc vào thiết bị. Trên Android/Chrome thường rõ nhất.'}
+              {status === 'loading' ? 'Đang kết nối máy chủ giọng đọc...' :
+               status === 'paused'  ? 'Đang tạm dừng...' :
+               status === 'playing' ? 'Đang phát — nghe rồi nhại lại từng câu' :
+               status === 'error'   ? <span className="text-red-400">{errMsg}</span> :
+               'Giọng nữ miền Nam — FPT.AI · chuẩn phong cách Ơ Bistro Thủ Đức.'}
             </p>
           </div>
         </div>
