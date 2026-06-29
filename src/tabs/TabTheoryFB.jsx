@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { AUDIO_LESSON_MODULES, AUDIO_LESSONS_TEXT } from '../data/lessons.js';
 
+const FPT_TTS_KEY = 'r8GHIiDHgtrf1mnaCnZL4l5VHK1GJ2rl';
+
 const SECTIONS = [
   { id: 'levels',    emoji: '🏅', label: '4 Cấp độ phục vụ' },
   { id: 'observe',   emoji: '👁️',  label: 'Mắt đọc vị' },
@@ -313,23 +315,22 @@ function SectionLAST() {
 
 // ── Section 6: Audio (FPT.AI TTS — giọng nữ miền Nam) ──────────────────────
 async function fetchFptTTS(text) {
-  const res = await fetch('/api/tts', {
+  const res = await fetch('https://api.fpt.ai/hmi/tts/v5', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text }),
+    headers: {
+      'api-key': FPT_TTS_KEY,
+      'voice': 'linhsan',
+      'speed': '0',
+      'prosody': '0',
+    },
+    body: text,
   });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.message || `HTTP ${res.status}`);
-  }
-  const ct = res.headers.get('content-type') || '';
-  if (ct.startsWith('audio/')) {
-    const blob = await res.blob();
-    return URL.createObjectURL(blob);
-  }
+  if (!res.ok) throw new Error(`FPT.AI HTTP ${res.status}`);
   const data = await res.json();
-  if (data.error !== 0) throw new Error(data.message || 'TTS error');
-  return data.async;
+  // Try known field names — return raw response if none match
+  const url = data.async || data.url || data.mp3 || data.link || data.audio;
+  if (!url) throw new Error(`FPT.AI: ${JSON.stringify(data).slice(0, 200)}`);
+  return url; // <audio>.src handles cross-origin without CORS restriction
 }
 
 function splitChunks(text, max = 2000) {
@@ -386,9 +387,9 @@ function SectionAudio() {
       audio.onerror = () => { if (activeRef.current) playFrom(idx + 1); };
       await audio.play();
       setStatus('playing');
-    } catch {
+    } catch (e) {
       setStatus('error');
-      setErrMsg('Không tải được giọng đọc — kiểm tra kết nối mạng và thử lại.');
+      setErrMsg(e.message || 'Không tải được giọng đọc — kiểm tra kết nối mạng.');
       activeRef.current = false;
     }
   };
