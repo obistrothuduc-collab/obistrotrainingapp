@@ -4,12 +4,10 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    // TTS proxy — gọi FPT.AI server-side, không bị CORS
     if (url.pathname === '/api/tts' && request.method === 'POST') {
       return handleTTS(request);
     }
 
-    // Serve static assets; fallback to index.html cho SPA routing
     const asset = await env.ASSETS.fetch(request);
     if (asset.status !== 404) return asset;
     return env.ASSETS.fetch(new Request(new URL('/index.html', url.origin)));
@@ -46,9 +44,14 @@ async function handleTTS(request) {
       return resp({ error: 1, message: `FPT.AI: ${raw.slice(0, 300)}` }, 502);
     }
 
-    // Stream audio binary — không CORS phía client
-    const audioRes = await fetch(audioUrl);
-    return new Response(audioRes.body, {
+    // FPT.AI xử lý bất đồng bộ — poll đến khi file MP3 sẵn sàng
+    const audioRes = await pollAudio(audioUrl);
+    if (!audioRes) {
+      return resp({ error: 1, message: 'FPT.AI: audio chưa sẵn sàng sau 12 giây' }, 502);
+    }
+
+    const buf = await audioRes.arrayBuffer();
+    return new Response(buf, {
       headers: {
         'Content-Type': 'audio/mpeg',
         'Cache-Control': 'public, max-age=3600',
@@ -57,6 +60,23 @@ async function handleTTS(request) {
   } catch (e) {
     return resp({ error: 1, message: e.message }, 500);
   }
+}
+
+// Poll mỗi 1–2 giây, tối đa ~12 giây — file nhỏ thường ready trong 1–3s
+async function pollAudio(url) {
+  const delays = [1500, 1000, 1000, 1500, 1500, 2000, 2000];
+  for (const delay of delays) {
+    await new Promise(r => setTimeout(r, delay));
+    try {
+      const res = await fetch(url);
+      if (!res.ok) continue;
+      const ct = (res.headers.get('content-type') || '').toLowerCase();
+      // Nếu server trả HTML/XML thì file chưa ready
+      if (ct.startsWith('text/') || ct.includes('xml') || ct.includes('html')) continue;
+      return res;
+    } catch {}
+  }
+  return null;
 }
 
 function resp(data, status = 200) {
